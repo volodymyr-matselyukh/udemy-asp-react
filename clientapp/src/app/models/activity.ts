@@ -6,7 +6,6 @@ export interface Activity {
     category: string;
     city: string;
     venue: string;
-    isCancelled: boolean;
 }
 
 
