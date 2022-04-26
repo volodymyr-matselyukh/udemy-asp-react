@@ -17,15 +17,19 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetActivities()
+        public async Task<IActionResult> GetActivities()
         {
-            return await _activityService.ListAsync();
+            var result = await _activityService.ListAsync();
+
+            return HandleResult(result);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Activity>> GetActivity(Guid id)
         {
-            return await _activityService.GetAsync(id);
+            var result = await _activityService.GetAsync(id);
+
+            return HandleResult(result);
         }
 
         [HttpPost]
@@ -46,8 +50,8 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteActivity(Guid id)
         {
-            await _activityService.DeleteAsync(id);
-            return NoContent();
+            var result = await _activityService.DeleteAsync(id);
+            return HandleResult(result);
         }
     }
 }

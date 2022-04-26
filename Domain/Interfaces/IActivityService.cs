@@ -1,11 +1,13 @@
-﻿namespace Domain.Interfaces
+﻿using Domain.Core;
+
+namespace Domain.Interfaces
 {
     public interface IActivityService
     {
-        Task<Activity> GetAsync(Guid id);
-        Task<List<Activity>> ListAsync();
-        Task UpdateAsync(Activity activity);
-        Task<Guid> AddAsync(Activity activity);
-        Task DeleteAsync(Guid id);
+        Task<Result<Activity>> GetAsync(Guid id);
+        Task<Result<List<Activity>>> ListAsync();
+        Task<Result<object>> UpdateAsync(Activity activity);
+        Task<Result<Guid>> AddAsync(Activity activity);
+        Task<Result<string>> DeleteAsync(Guid id);
     }
 }
