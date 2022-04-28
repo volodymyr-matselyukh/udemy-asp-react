@@ -25,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Activity>> GetActivity(Guid id)
+        public async Task<IActionResult> GetActivity(Guid id)
         {
             var result = await _activityService.GetAsync(id);
 
@@ -33,18 +33,18 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddActivity(Activity activity)
+        public async Task<IActionResult> AddActivity(Activity activity)
         {
             var activityId = await _activityService.AddAsync(activity);
-            return CreatedAtAction("GetActivity", new { id= activityId }, null);
+            return CreatedAtAction("GetActivity", new { id = activityId }, null);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateActivity(Guid id, Activity activity)
         {
             activity.Id = id;
-            await _activityService.UpdateAsync(activity);
-            return Ok();
+            var result = await _activityService.UpdateAsync(activity);
+            return HandleResult(result);
         }
 
         [HttpDelete("{id}")]

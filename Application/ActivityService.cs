@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using AutoMapper;
+using Domain;
 using Domain.Core;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -8,25 +9,27 @@ namespace Application;
 public class ActivityService : IActivityService
 {
     private readonly DataContext _dataContext;
+    private readonly IMapper _mapper;
 
-    public ActivityService(DataContext dataContext)
+    public ActivityService(DataContext dataContext, IMapper mapper)
     {
         _dataContext = dataContext;
+        this._mapper = mapper;
     }
-    public async Task<Result<Guid>> AddAsync(Activity activity)
+    public async Task<Result> AddAsync(Activity activity)
     {
         _dataContext.Activities.Add(activity);
         var isRecordChanged = await _dataContext.SaveChangesAsync() > 0;
 
         if (!isRecordChanged)
         {
-            return Result<Guid>.Failure("Failed to create activity");
+            return Result.Error("Failed to create activity");
         }
 
-        return Result<Guid>.Success(activity.Id);
+        return Result.Success(activity.Id);
     }
 
-    public async Task<Result<string>> DeleteAsync(Guid id)
+    public async Task<Result> DeleteAsync(Guid id)
     {
         var activity = await _dataContext.Activities.FindAsync(id);
 
@@ -38,36 +41,42 @@ public class ActivityService : IActivityService
 
             if (!isRowsAffected)
             {
-                return Result<string>.Failure("Failed to delete activity");
+                return Result.Error("Failed to delete activity");
             }
-        }
-        else
-        { 
-            return null;
-        }
 
-        return Result<string>.EmptySuccess();
+            return Result.SuccessNoContent();
+        }
+        
+        return Result.SuccessNotFound();
     }
 
-    public async Task<Result<Activity>> GetAsync(Guid id)
+    public async Task<Result> GetAsync(Guid id)
     {
         var activity = await _dataContext.Activities.FindAsync(id);
 
-        return Result<Activity>.Success(activity);
+        return Result.Success(activity);
     }
 
-    public async Task<Result<List<Activity>>> ListAsync()
+    public async Task<Result> ListAsync()
     {
         var activities = await _dataContext.Activities.ToListAsync();
 
-        return Result<List<Activity>>.Success(activities);
+        return Result.Success(activities);
     }
 
-    public async Task<Result<dynamic>> UpdateAsync(Activity activity)
+    public async Task<Result> UpdateAsync(Activity activity)
     {
-        _dataContext.Activities.Update(activity);
-        await _dataContext.SaveChangesAsync();
+        var activityFromDb = await _dataContext.Activities.FindAsync(activity.Id);
 
-        return Result<dynamic>.Success(null);
+        _mapper.Map(activity, activityFromDb);
+        
+        var isRowAffected = await _dataContext.SaveChangesAsync() > 0;
+
+        if (!isRowAffected)
+        {
+            return Result.Error("Failed to update activity");
+        }
+
+        return Result.SuccessNoContent();
     }
 }
