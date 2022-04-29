@@ -33,8 +33,8 @@ public class ActivityService : IActivityService
     {
         var activity = await _dataContext.Activities.FindAsync(id);
 
-        if (activity != null)
-        {
+        //if (activity != null)
+        //{
             _dataContext.Activities.Remove(activity);
 
             var isRowsAffected = await _dataContext.SaveChangesAsync() > 0;
@@ -45,7 +45,7 @@ public class ActivityService : IActivityService
             }
 
             return Result.SuccessNoContent();
-        }
+        //}
         
         return Result.SuccessNotFound();
     }
