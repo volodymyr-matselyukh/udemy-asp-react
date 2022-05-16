@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistance;
 
@@ -7,7 +8,7 @@ namespace API.Controllers
 {
     public class ActivitiesController : BaseApiController
     {
-        private DataContext _dbContext;
+        private readonly DataContext _dbContext;
         private readonly IActivityService _activityService;
 
         public ActivitiesController(DataContext dbContext, IActivityService activityService)
