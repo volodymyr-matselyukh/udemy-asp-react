@@ -6,16 +6,18 @@ using Persistance;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
     public class ActivitiesController : BaseApiController
     {
         private readonly DataContext _dbContext;
         private readonly IActivityService _activityService;
+        private readonly IAttendenceService _attendenceService;
 
-        public ActivitiesController(DataContext dbContext, IActivityService activityService)
+        public ActivitiesController(DataContext dbContext, IActivityService activityService,
+            IAttendenceService attendenceService)
         {
             _dbContext = dbContext;
             _activityService = activityService;
+            _attendenceService = attendenceService;
         }
 
         [HttpGet]
@@ -41,6 +43,7 @@ namespace API.Controllers
             return CreatedAtAction("GetActivity", new { id = activityId }, null);
         }
 
+        [Authorize(Policy = "IsActivityHost")]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateActivity(Guid id, Activity activity)
         {
@@ -54,6 +57,12 @@ namespace API.Controllers
         {
             var result = await _activityService.DeleteAsync(id);
             return HandleResult(result);
+        }
+
+        [HttpPost("{id}/attend")]
+        public async Task<IActionResult> Attend(Guid id)
+        { 
+            return HandleResult(await _attendenceService.UpdateAttendeeAsyns(id));
         }
     }
 }

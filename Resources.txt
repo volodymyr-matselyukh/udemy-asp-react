@@ -1,0 +1,5 @@
+#adding migration
+add-migration "add activities attendees" -p Persistance -s API
+
+#remove uncommited migration
+remove-migration -p Persistance -s API

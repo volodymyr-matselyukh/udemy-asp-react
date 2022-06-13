@@ -1,6 +1,8 @@
 ﻿using Application;
+using Application.Interfaces;
 using Application.Mappings;
 using Domain.Interfaces;
+using Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Persistance;
@@ -27,8 +29,11 @@ namespace API.Extentions
             });
 
             services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<IAttendenceService, AttendenceService>();
 
             services.AddAutoMapper(typeof(ActivityMapping).Assembly);
+
+            services.AddScoped<IUserAccessor, UserAccessor>();
 
             return services;
         }
