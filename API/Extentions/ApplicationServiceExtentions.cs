@@ -1,7 +1,7 @@
 ﻿using Application;
-using Application.Interfaces;
 using Application.Mappings;
 using Domain.Interfaces;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -30,10 +30,15 @@ namespace API.Extentions
 
             services.AddScoped<IActivityService, ActivityService>();
             services.AddScoped<IAttendenceService, AttendenceService>();
+            services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<IProfileService, ProfileService>();
 
             services.AddAutoMapper(typeof(ActivityMapping).Assembly);
 
             services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+
+            services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
 
             return services;
         }

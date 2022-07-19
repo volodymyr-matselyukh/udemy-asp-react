@@ -1,5 +1,4 @@
-﻿using Application.Interfaces;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
 using Domain.Core;
