@@ -83,8 +83,18 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+
             var user = await userManager.Users.Include(user => user.Photos)
                 .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
 
             return CreateUserObject(user);
         }
