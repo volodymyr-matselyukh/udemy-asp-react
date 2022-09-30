@@ -31,19 +31,19 @@ export default class UserStore{
     }
 
     logout = () => {
-        store.commonStore.setToken(null);
-        window.localStorage.removeItem('jwt');
-        this.user = null;
+        this.logoutUser();
         browserHistory.push('/');
     }
 
+	logoutUser = () => {
+		store.commonStore.setToken(null);
+        window.localStorage.removeItem('jwt');
+        this.user = null;
+	}
+
     getUser = async () => {
-        try {
-            const user = await agent.Account.current();
-            runInAction(() => this.user = user);
-        } catch (error) {
-            console.log(error);
-        }
+		const user = await agent.Account.current();
+		runInAction(() => this.user = user);
     }
 
     register = async (creds: UserFormValues) => {
@@ -64,6 +64,13 @@ export default class UserStore{
 		if(this.user)
 		{
 			this.user.image = image;
+		}
+	}
+
+	setDisplayName = (displayName: string) => {
+		if(this.user)
+		{
+			this.user.displayName = displayName;
 		}
 	}
 }

@@ -26,6 +26,12 @@ function App() {
 		if (commonStore.token) {
 			userStore
 				.getUser()
+				.catch(error => {
+					if(error && (error as any).response.status === 401)
+					{
+						userStore.logoutUser();
+					}
+				})
 				.finally(() => {
 					commonStore.setAppLoaded();
 				});

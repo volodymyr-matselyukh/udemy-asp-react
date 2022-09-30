@@ -8,6 +8,8 @@ interface Props {
 	profile: Profile;
 }
 
+const maxCharactersInBio = 35;
+
 export default observer(function ProfileCard({profile}: Props) {
 	return (
 		<Card 
@@ -15,7 +17,7 @@ export default observer(function ProfileCard({profile}: Props) {
 			<Image src={profile.image || '/assets/user.png'} />
 			<Card.Content>
 				<Card.Header>{profile.displayName}</Card.Header>
-				<Card.Description>Biod goes here</Card.Description>
+				<Card.Description>{profile.bio && profile.bio?.length > maxCharactersInBio ? profile.bio?.substring(0, maxCharactersInBio) + '...' : profile.bio}</Card.Description>
 			</Card.Content>
 			<Card.Content extra>
 				<Icon name="user" />

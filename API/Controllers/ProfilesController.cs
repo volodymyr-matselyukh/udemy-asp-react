@@ -1,4 +1,5 @@
 ﻿using Domain.Interfaces;
+using Domain.Profiles;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -16,6 +17,14 @@ namespace API.Controllers
         public async Task<IActionResult> GetProfile(string userName)
         { 
             var result = await _profileService.GetProfile(userName);
+
+            return HandleResult(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProfile(UpdateProfile profile)
+        {
+            var result = await _profileService.UpdateProfile(profile);
 
             return HandleResult(result);
         }

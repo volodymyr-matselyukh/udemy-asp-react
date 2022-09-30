@@ -51,7 +51,11 @@ axios.interceptors.response.use(async response => {
 			}
 			break;
 		case 401:
-			toast.error('unauthorized', { theme: "colored" });
+			if(config.url !== "/account")
+			{
+				toast.error('unauthorized', { theme: "colored" });
+			}
+			
 			break;
 		case 404:
 			browserHistory.push('/not-found');
@@ -99,7 +103,8 @@ const Profiles = {
 		});
 	},
 	setMainPhoto: (id: string) => requests.post(`/photos/${id}/setMain`, {}),
-	deletePhoto: (id: string) => requests.del(`/photos/${id}`)
+	deletePhoto: (id: string) => requests.del(`/photos/${id}`),
+	updateProfile: (profile: Partial<Profile>) => requests.put<void>("/profiles", profile)
 }
 
 const agent = {
