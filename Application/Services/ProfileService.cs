@@ -6,7 +6,7 @@ using Domain.Profiles;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 
-namespace Application
+namespace Application.Services
 {
     public class ProfileService : IProfileService
     {
@@ -14,7 +14,7 @@ namespace Application
         private readonly IMapper _mapper;
         private readonly IUserAccessor _userAccessor;
 
-        public ProfileService(DataContext dataContext, 
+        public ProfileService(DataContext dataContext,
             IMapper mapper,
             IUserAccessor userAccessor)
         {
@@ -45,7 +45,8 @@ namespace Application
 
             var isSuccess = await _dataContext.SaveChangesAsync() > 0;
 
-            if (isSuccess) {
+            if (isSuccess)
+            {
                 return Result.SuccessNoContent();
             }
 

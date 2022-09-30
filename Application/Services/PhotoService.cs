@@ -1,11 +1,11 @@
-﻿using Domain;
-using Domain.Core;
+﻿using Domain.Core;
+using Domain.EFEntities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 
-namespace Application
+namespace Application.Services
 {
     public class PhotoService : IPhotoService
     {
@@ -47,7 +47,7 @@ namespace Application
             var result = await _dataContext.SaveChangesAsync() > 0;
 
             if (result)
-            { 
+            {
                 return Result.Success(photo);
             }
 
@@ -115,7 +115,7 @@ namespace Application
             var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
 
             if (currentMain != null)
-            { 
+            {
                 currentMain.IsMain = false;
             }
 

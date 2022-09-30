@@ -1,10 +1,10 @@
-﻿using Domain;
-using Domain.Core;
+﻿using Domain.Core;
+using Domain.EFEntities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 
-namespace Application
+namespace Application.Services
 {
     public class AttendenceService : IAttendenceService
     {
@@ -45,7 +45,7 @@ namespace Application
                 activity.IsCancelled = !activity.IsCancelled;
             }
 
-            if (attendence != null && hostUserName != user.UserName) 
+            if (attendence != null && hostUserName != user.UserName)
             {
                 activity.Attendees.Remove(attendence);
             }

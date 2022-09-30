@@ -1,4 +1,4 @@
-﻿using Domain;
+﻿using Domain.EFEntities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

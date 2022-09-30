@@ -1,4 +1,4 @@
-﻿namespace Domain
+﻿namespace Domain.EFEntities
 {
     public class Photo
     {

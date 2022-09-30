@@ -1,4 +1,4 @@
-﻿using Domain;
+﻿using Domain.EFEntities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Persistance

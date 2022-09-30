@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain;
 using Domain.Core;
 using Domain.DTOs;
+using Domain.EFEntities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 
-namespace Application;
+namespace Application.Services;
 public class ActivityService : IActivityService
 {
     private readonly DataContext _dataContext;
@@ -84,7 +84,7 @@ public class ActivityService : IActivityService
         var activityFromDb = await _dataContext.Activities.FindAsync(activity.Id);
 
         _mapper.Map(activity, activityFromDb);
-        
+
         var isRowAffected = await _dataContext.SaveChangesAsync() > 0;
 
         if (!isRowAffected)

@@ -1,4 +1,5 @@
 ﻿using Domain.Core;
+using Domain.EFEntities;
 
 namespace Domain.Interfaces
 {

@@ -1,4 +1,6 @@
-﻿namespace Domain.Profiles
+﻿using Domain.EFEntities;
+
+namespace Domain.Profiles
 {
     public class AttendeeProfile
     {
