@@ -1,4 +1,6 @@
-﻿using Domain.Interfaces;
+﻿using API.DTOs;
+using Domain.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace API.SignalR
@@ -12,11 +14,11 @@ namespace API.SignalR
             _commentService = commentService;
         }
 
-        public async Task SendComment(string body, Guid activityId)
+        public async Task SendComment(SendCommentDto comment)
         {
-            var result = await _commentService.Create(body, activityId);
+            var result = await _commentService.Create(comment.Body, comment.ActivityId);
 
-            await Clients.Group(activityId.ToString())
+            await Clients.Group(comment.ActivityId.ToString())
                 .SendAsync("ReceiveComment", result.Value);
         }
 
