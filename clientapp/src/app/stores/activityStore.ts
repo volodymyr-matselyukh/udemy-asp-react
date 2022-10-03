@@ -7,7 +7,7 @@ import { store } from "./store";
 
 export default class ActivityStore {
 	activityRegistry = new Map<string, Activity>();
-	selectedActivity: Activity | undefined = undefined;
+	selectedActivity: Activity | undefined | null = undefined;
 	editMode = false;
 	loading = false;
 	loadingInitial = false;
@@ -95,15 +95,11 @@ export default class ActivityStore {
 	private setActivity = (activity: Activity) => {
 		const user = store.userStore.user;
 
-		console.log('user', user);
-
 		if (user) {
 			activity.isGoing = activity.attendees!.some(a => a.username === user.userName);
 			activity.isHost = activity.hostUsername === user.userName;
 			activity.host = activity.attendees?.find(a => a.username === activity.hostUsername);
 		}
-
-		console.log('activity', activity);
 
 		activity.date = new Date(activity.date!);
 		this.activityRegistry.set(activity.id, activity)
@@ -212,8 +208,9 @@ export default class ActivityStore {
 		} finally {
 			runInAction(() => this.loading = false);
 		}
+	}
 
-
-
+	clearSelectedActivity = () => {
+		this.selectedActivity = null;
 	}
 }

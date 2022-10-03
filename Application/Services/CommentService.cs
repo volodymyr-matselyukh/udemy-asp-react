@@ -55,7 +55,7 @@ namespace Application.Services
         public async Task<Result> List(Guid activityId)
         {
             var comments = await _dataContext.Comments.Where(c => c.Activity.Id == activityId)
-                .OrderBy(c => c.CreatedAt)
+                .OrderByDescending(c => c.CreatedAt)
                 .ProjectTo<CommentDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
