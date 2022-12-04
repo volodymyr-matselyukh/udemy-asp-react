@@ -36,6 +36,7 @@ namespace API.Extentions
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IFollowersService, FollowersService>();
 
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 

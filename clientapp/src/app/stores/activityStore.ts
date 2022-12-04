@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { makeAutoObservable, runInAction } from "mobx";
+import { act } from "react-dom/test-utils";
 import agent from "../api/agent";
 import { Activity, ActivityFormValues } from "../models/activity";
 import { Profile } from "../models/profile";
@@ -212,5 +213,17 @@ export default class ActivityStore {
 
 	clearSelectedActivity = () => {
 		this.selectedActivity = null;
+	}
+
+	updateAttendeeFollowing = (username: string) => {
+		this.activityRegistry.forEach(activity => {
+			activity.attendees.forEach(attendee => {
+				if(attendee.username === username)
+				{
+					attendee.following ? attendee.followersCount -- : attendee.followersCount ++;
+					attendee.following = !attendee.following;
+				}
+			})
+		})
 	}
 }

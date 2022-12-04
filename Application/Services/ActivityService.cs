@@ -64,7 +64,7 @@ public class ActivityService : IActivityService
     public async Task<Result> GetAsync(Guid id)
     {
         var activity = await _dataContext.Activities
-            .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() })
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return Result.Success(activity);
@@ -73,7 +73,7 @@ public class ActivityService : IActivityService
     public async Task<Result> ListAsync()
     {
         var activities = await _dataContext.Activities
-            .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() })
             .ToListAsync();
 
         return Result.Success(activities);

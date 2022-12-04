@@ -25,7 +25,7 @@ namespace Application.Services
         public async Task<Result> GetProfile(string userName)
         {
             var user = await _dataContext.Users
-                .ProjectTo<AttendeeProfile>(_mapper.ConfigurationProvider)
+                .ProjectTo<AttendeeProfile>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() })
                 .SingleOrDefaultAsync(x => x.Username == userName);
 
             return Result.Success(user);
