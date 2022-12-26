@@ -5,8 +5,8 @@ namespace Domain.Interfaces
 {
     public interface IPhotoService
     {
-        public Task<Result> AddAsync(IFormFile file);
-        public Task<Result> DeleteAsync(string id);
-        public Task<Result> SetMain(string id);
+        public Task<Result<object>> AddAsync(IFormFile file);
+        public Task<Result<object>> DeleteAsync(string id);
+        public Task<Result<object>> SetMain(string id);
     }
 }

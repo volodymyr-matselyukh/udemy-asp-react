@@ -21,13 +21,13 @@ namespace Application.Services
             _mapper = mapper;
             _userAccessor = userAccessor;
         }
-        public async Task<Result> Create(string body, Guid activityId)
+        public async Task<Result<CommentDto>> Create(string body, Guid activityId)
         {
             var activity = await _dataContext.Activities.FindAsync(activityId);
 
             if (activity == null)
             {
-                return Result.SuccessNotFound();
+                return Result<CommentDto>.SuccessNotFound();
             }
 
             var user = await _dataContext.Users.Include(p => p.Photos)
@@ -46,13 +46,13 @@ namespace Application.Services
 
             if (success)
             {
-                return Result.Success(_mapper.Map<CommentDto>(comment));
+                return Result<CommentDto>.Success(_mapper.Map<CommentDto>(comment));
             }
 
-            return Result.Error("Failed to add comment");
+            return Result<CommentDto>.Error("Failed to add comment");
         }
 
-        public async Task<Result> List(Guid activityId)
+        public async Task<Result<object>> List(Guid activityId)
         {
             var comments = await _dataContext.Comments.Where(c => c.Activity.Id == activityId)
                 .OrderByDescending(c => c.CreatedAt)

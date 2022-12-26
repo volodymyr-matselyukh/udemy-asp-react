@@ -20,7 +20,7 @@ public class ActivityService : IActivityService
         _mapper = mapper;
         _userAccessor = userAccessor;
     }
-    public async Task<Result> AddAsync(Activity activity)
+    public async Task<Result<object>> AddAsync(Activity activity)
     {
         var user = await _dataContext.Users
             .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
@@ -45,7 +45,7 @@ public class ActivityService : IActivityService
         return Result.Success(activity.Id);
     }
 
-    public async Task<Result> DeleteAsync(Guid id)
+    public async Task<Result<object>> DeleteAsync(Guid id)
     {
         var activity = await _dataContext.Activities.FindAsync(id);
 
@@ -61,7 +61,7 @@ public class ActivityService : IActivityService
         return Result.SuccessNoContent();
     }
 
-    public async Task<Result> GetAsync(Guid id)
+    public async Task<Result<object>> GetAsync(Guid id)
     {
         var activity = await _dataContext.Activities
             .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() })
@@ -70,16 +70,23 @@ public class ActivityService : IActivityService
         return Result.Success(activity);
     }
 
-    public async Task<Result> ListAsync()
+    public async Task<Result<PagedList<ActivityDto>>> ListAsync(PagingParams parameters)
     {
-        var activities = await _dataContext.Activities
+        var query = _dataContext.Activities
+            .OrderByDescending(activity => activity.Date)
             .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() })
-            .ToListAsync();
+            .AsQueryable();
 
-        return Result.Success(activities);
+        var activities = await PagedList<ActivityDto>.CreateAsync(
+            query,
+            parameters.PageNumber,
+            parameters.PageSize
+        );
+
+        return Result<PagedList<ActivityDto>>.Success(activities);
     }
 
-    public async Task<Result> UpdateAsync(Activity activity)
+    public async Task<Result<object>> UpdateAsync(Activity activity)
     {
         var activityFromDb = await _dataContext.Activities.FindAsync(activity.Id);
 

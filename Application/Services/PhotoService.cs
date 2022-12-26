@@ -20,7 +20,7 @@ namespace Application.Services
             _photoAccessor = photoAccessor;
             _userAccessor = userAccessor;
         }
-        public async Task<Result> AddAsync(IFormFile file)
+        public async Task<Result<object>> AddAsync(IFormFile file)
         {
             var user = await _dataContext.Users.Include(p => p.Photos)
                 .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
@@ -54,7 +54,7 @@ namespace Application.Services
             return Result.Error("Problem adding photo");
         }
 
-        public async Task<Result> DeleteAsync(string id)
+        public async Task<Result<object>> DeleteAsync(string id)
         {
             var user = await _dataContext.Users.Include(p => p.Photos)
                 .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
@@ -95,7 +95,7 @@ namespace Application.Services
             return Result.Error("Error deleting photo from api");
         }
 
-        public async Task<Result> SetMain(string id)
+        public async Task<Result<object>> SetMain(string id)
         {
             var user = await _dataContext.Users.Include(user => user.Photos)
                 .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());

@@ -16,7 +16,7 @@ namespace Application.Services
             _dataContext = dataContext;
             _userAccessor = userAccessor;
         }
-        public async Task<Result> UpdateAttendeeAsyns(Guid id)
+        public async Task<Result<object>> UpdateAttendeeAsyns(Guid id)
         {
             var activity = await _dataContext.Activities
                 .Include(activity => activity.Attendees)

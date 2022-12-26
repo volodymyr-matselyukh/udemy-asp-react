@@ -22,7 +22,7 @@ namespace Application.Services
             _mapper = mapper;
             _userAccessor = userAccessor;
         }
-        public async Task<Result> GetProfile(string userName)
+        public async Task<Result<object>> GetProfile(string userName)
         {
             var user = await _dataContext.Users
                 .ProjectTo<AttendeeProfile>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() })
@@ -30,7 +30,7 @@ namespace Application.Services
 
             return Result.Success(user);
         }
-        public async Task<Result> UpdateProfile(UpdateProfile profile)
+        public async Task<Result<object>> UpdateProfile(UpdateProfile profile)
         {
             var user = await _dataContext.Users
                 .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());

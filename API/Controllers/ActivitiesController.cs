@@ -1,4 +1,5 @@
-﻿using Domain.EFEntities;
+﻿using Domain.Core;
+using Domain.EFEntities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,24 +9,22 @@ namespace API.Controllers
 {
     public class ActivitiesController : BaseApiController
     {
-        private readonly DataContext _dbContext;
         private readonly IActivityService _activityService;
         private readonly IAttendenceService _attendenceService;
 
         public ActivitiesController(DataContext dbContext, IActivityService activityService,
             IAttendenceService attendenceService)
         {
-            _dbContext = dbContext;
             _activityService = activityService;
             _attendenceService = attendenceService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetActivities()
+        public async Task<IActionResult> GetActivities([FromQuery]PagingParams parameters)
         {
-            var result = await _activityService.ListAsync();
+            var result = await _activityService.ListAsync(parameters);
 
-            return HandleResult(result);
+            return HandlePagedResult(result);
         }
 
         [HttpGet("{id}")]

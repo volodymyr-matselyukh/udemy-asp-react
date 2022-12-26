@@ -22,7 +22,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Result> FollowToggle(string targetUserName)
+        public async Task<Result<object>> FollowToggle(string targetUserName)
         {
             var observer = await _dataContext.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
 
@@ -60,7 +60,7 @@ namespace Application.Services
             return Result.Error("Failed to update following");
         }
 
-        public async Task<Result> List(string predicate, string username)
+        public async Task<Result<object>> List(string predicate, string username)
         {
             var profiles = new List<AttendeeProfile>();
 

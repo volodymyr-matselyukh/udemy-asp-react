@@ -1,33 +1,57 @@
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
-import { Grid } from "semantic-ui-react";
+import { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import { Grid, Loader } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponents";
+import { PagingParams } from "../../../app/models/pagination";
 import { useStore } from "../../../app/stores/store";
 import ActivityFilters from "./ActivityFilters";
 import ActivityList from "./ActivityList";
 
 export default observer(function ActivityDashboard() {
-  const { activityStore } = useStore();
-  const {loadActivities, activityRegistry} = activityStore;
+	const { activityStore } = useStore();
+	const { loadActivities, activityRegistry, setPagingParams, pagination } =
+		activityStore;
+	const [loadingNext, setLoadingNext] = useState(false);
 
-  useEffect(() => {
-    if(activityRegistry.size <= 1)
-    {
-      loadActivities();
-    }
-  }, [activityStore, loadActivities, activityRegistry.size]);
+	function handleGetNext() {
+		setLoadingNext(true);
+		setPagingParams(new PagingParams(pagination!.currentPage + 1));
 
-  if (activityStore.loadingInitial)
-    return <LoadingComponent content="Loading activities..." />;
+		loadActivities().then(() => setLoadingNext(false));
+	}
 
-  return (
-    <Grid>
-      <Grid.Column width="10">
-        <ActivityList />
-      </Grid.Column>
-      <Grid.Column width="6">
-        <ActivityFilters />
-      </Grid.Column>
-    </Grid>
-  );
-})
+	useEffect(() => {
+		if (activityRegistry.size <= 1) {
+			loadActivities();
+		}
+	}, [activityStore, loadActivities, activityRegistry.size]);
+
+	if (activityStore.loadingInitial && !loadingNext) {
+		return <LoadingComponent content="Loading activities..." />;
+	}
+
+	return (
+		<Grid>
+			<Grid.Column width="10">
+				<InfiniteScroll
+					pageStart={0}
+					loadMore={handleGetNext}
+					hasMore={!loadingNext && !!pagination && pagination.currentPage < pagination.totalPages}
+					initialLoad={false}
+				>
+					<ActivityList />
+				</InfiniteScroll>
+			</Grid.Column>
+			<Grid.Column width="6">
+				<ActivityFilters />
+			</Grid.Column>
+			<Grid.Column width={10}>
+				<Loader
+					active={loadingNext}
+				>
+				</Loader>
+			</Grid.Column>
+		</Grid>
+	);
+});

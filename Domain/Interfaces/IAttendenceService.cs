@@ -4,6 +4,6 @@ namespace Domain.Interfaces
 {
     public interface IAttendenceService
     {
-        Task<Result> UpdateAttendeeAsyns(Guid id);
+        Task<Result<object>> UpdateAttendeeAsyns(Guid id);
     }
 }
