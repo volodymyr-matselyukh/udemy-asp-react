@@ -4,6 +4,7 @@ using Domain.Core;
 using Domain.DTOs;
 using Domain.EFEntities;
 using Domain.Interfaces;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 
@@ -70,12 +71,23 @@ public class ActivityService : IActivityService
         return Result.Success(activity);
     }
 
-    public async Task<Result<PagedList<ActivityDto>>> ListAsync(PagingParams parameters)
+    public async Task<Result<PagedList<ActivityDto>>> ListAsync(ActivityParams parameters)
     {
         var query = _dataContext.Activities
+            .Where(activity => activity.Date >= parameters.StartDate)
             .OrderByDescending(activity => activity.Date)
             .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() })
             .AsQueryable();
+
+        if (parameters.IsGoing && !parameters.IsHost)
+        {
+            query = query.Where(activity => activity.Attendees.Any(attendee => attendee.Username == _userAccessor.GetUsername()));
+        }
+
+        if (parameters.IsHost && !parameters.IsGoing)
+        {
+            query = query.Where(activity => activity.HostUsername == _userAccessor.GetUsername());
+        }
 
         var activities = await PagedList<ActivityDto>.CreateAsync(
             query,

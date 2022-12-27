@@ -1,6 +1,7 @@
 ﻿using Domain.Core;
 using Domain.EFEntities;
 using Domain.Interfaces;
+using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistance;
@@ -20,7 +21,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetActivities([FromQuery]PagingParams parameters)
+        public async Task<IActionResult> GetActivities([FromQuery]ActivityParams parameters)
         {
             var result = await _activityService.ListAsync(parameters);
 
