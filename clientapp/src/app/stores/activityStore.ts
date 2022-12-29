@@ -34,8 +34,6 @@ export default class ActivityStore {
 	}
 
 	setPredicate = (predicate: string, value: string | Date) => {
-		
-
 		switch(predicate) {
 			case 'all':
 				this.resetPredicate();

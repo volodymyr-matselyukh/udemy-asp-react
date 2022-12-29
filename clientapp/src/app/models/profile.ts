@@ -4,7 +4,7 @@ export interface Profile{
     username: string;
     displayName: string;
     image?: string;
-    bio?: string;
+    bio: string;
 	followersCount: number;
 	followingCount: number;
 	following: boolean;
@@ -16,6 +16,7 @@ export class Profile implements Profile {
 		this.username = user.userName;
 		this.displayName = user.displayName;
 		this.image = user.image;
+		this.bio = this.bio ?? "";
 	}
 }
 

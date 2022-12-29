@@ -57,9 +57,15 @@ namespace API.Extentions
                 {
                     policy.Requirements.Add(new IsHostRequirement());
                 });
+
+                opt.AddPolicy("IsUserSignedIn", policy =>
+                {
+                    policy.Requirements.Add(new IsUserSignedInRequirement());
+                });
             });
 
             services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
+            services.AddTransient<IAuthorizationHandler, IsUserSignedInRequirementHandler>();
             services.AddScoped<TokenService>();
 
             return services;

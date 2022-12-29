@@ -1,5 +1,6 @@
 ﻿using Domain.Interfaces;
 using Domain.Profiles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -21,6 +22,7 @@ namespace API.Controllers
             return HandleResult(result);
         }
 
+        [Authorize(Policy = "IsUserSignedIn")]
         [HttpPut]
         public async Task<IActionResult> UpdateProfile(UpdateProfile profile)
         {

@@ -27,7 +27,7 @@ function App() {
 			userStore
 				.getUser()
 				.catch(error => {
-					if(error && (error as any).response.status === 401)
+					if(error && (error as any).response?.status === 401)
 					{
 						userStore.logoutUser();
 					}

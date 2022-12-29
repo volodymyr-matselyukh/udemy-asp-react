@@ -21,11 +21,11 @@ export default observer(function ProfileAboutForm({ profile, closeEditMode }: Pr
 		<Formik
 			initialValues={{
 				displayName: profile.displayName,
-				bio: profile.bio,
+				bio: profile.bio ?? "",
 				error: null
 			}}
 			onSubmit={(values, {setErrors, setSubmitting}) => {
-				profileStore.updateProfile(values)
+				profileStore.updateProfile({...values, username: profile.username})
 				.then(_ => 
 					{
 						setSubmitting(false);

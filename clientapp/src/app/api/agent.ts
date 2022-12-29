@@ -35,7 +35,15 @@ axios.interceptors.response.use(async response => {
 
 	return response;
 }, (error: AxiosError) => {
-	const { data, status, config } = error.response!;
+	let data, status, config;
+
+	if(error.response)
+	{
+		data = error.response.data;
+		status = error.response.status;
+		config = error.response.config;
+	}
+	 
 
 	switch (status) {
 		case 400:
@@ -43,7 +51,7 @@ axios.interceptors.response.use(async response => {
 				toast.error(data);
 			}
 
-			if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
+			if (config && config.method === 'get' && data.errors.hasOwnProperty('id')) {
 				browserHistory.push('/not-found');
 			}
 
@@ -59,7 +67,14 @@ axios.interceptors.response.use(async response => {
 			}
 			break;
 		case 401:
-			if(config.url !== "/account")
+			if(config && config.url !== "/account")
+			{
+				toast.error('unauthorized', { theme: "colored" });
+			}
+			
+			break;
+		case 403:
+			if(config && config.url !== "/account")
 			{
 				toast.error('unauthorized', { theme: "colored" });
 			}

@@ -1,6 +1,7 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Photo, Profile } from "../models/profile";
+import { User } from "../models/user";
 import { store } from "./store";
 
 export default class ProfileStore {
@@ -138,7 +139,7 @@ export default class ProfileStore {
 				{
 					this.profile.displayName = profile.displayName;
 					store.userStore.setDisplayName(profile.displayName);
-					this.profile.bio = profile.bio;
+					this.profile.bio = profile.bio ?? "";
 				}
 
 				this.loading = false;
@@ -147,8 +148,6 @@ export default class ProfileStore {
 			runInAction(() => {
 				this.loading = false;
 			});
-
-			console.log(error);
 		}
 	}
 
