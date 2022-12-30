@@ -38,6 +38,7 @@ export default class UserStore{
 	logoutUser = () => {
 		store.commonStore.setToken(null);
         window.localStorage.removeItem('jwt');
+		store.activityStore.activityRegistry.clear();
         this.user = null;
 	}
 

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Core;
+using Domain.DTOs;
+using Domain.Enums;
 using Domain.Interfaces;
 using Domain.Profiles;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +53,30 @@ namespace Application.Services
             }
 
             return Result.Error("Nothing to update");
+        }
+
+        public async Task<Result<object>> ListProfileActivities(string username, ProfileActivityPredicateTypeEnum predicate)
+        {
+            var activityAttendeesQuery = _dataContext.ActivityAttendees
+                .Where(activityAttendee => activityAttendee.AppUser.UserName == username);
+
+            switch (predicate)
+            {
+                case ProfileActivityPredicateTypeEnum.past:
+                    activityAttendeesQuery = activityAttendeesQuery.Where(activityAttendee => activityAttendee.Activity.Date <= DateTime.UtcNow);
+                    break;
+                case ProfileActivityPredicateTypeEnum.hosting:
+                    activityAttendeesQuery = activityAttendeesQuery.Where(activityAttendee => activityAttendee.IsHost);
+                    break;
+                case ProfileActivityPredicateTypeEnum.future:
+                    activityAttendeesQuery = activityAttendeesQuery.Where(activityAttendee => activityAttendee.Activity.Date > DateTime.UtcNow);
+                    break;
+            }
+
+            var profileActivities = await activityAttendeesQuery.ProjectTo<ProfileActivityDto>(_mapper.ConfigurationProvider)
+                                            .ToListAsync();
+
+            return Result.Success(profileActivities);
         }
     }
 }

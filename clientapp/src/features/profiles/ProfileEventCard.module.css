@@ -1,0 +1,7 @@
+.image{
+	object-fit: cover;
+}
+
+.image img{
+	min-height: 100px;
+}

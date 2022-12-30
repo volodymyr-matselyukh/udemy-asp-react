@@ -1,7 +1,6 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import agent from "../api/agent";
-import { Photo, Profile } from "../models/profile";
-import { User } from "../models/user";
+import { Photo, Profile, ProfileEvent } from "../models/profile";
 import { store } from "./store";
 
 export default class ProfileStore {
@@ -9,9 +8,11 @@ export default class ProfileStore {
 	loadingProfile = false;
 	uploading = false;
 	loading = false;
+	loadingEvents = false;
 	loadingFollowings = false;
 	followings: Profile[] = [];
 	activeTab = 0;
+	profileEvents = new Map<string, ProfileEvent[]>();
 
 	constructor() {
 		makeAutoObservable(this);
@@ -19,7 +20,7 @@ export default class ProfileStore {
 		reaction(
 			() => this.activeTab,
 			activeTab => {
-				if(activeTab === 3 || activeTab ===4 ){
+				if (activeTab === 3 || activeTab === 4) {
 					const predicate = activeTab === 3 ? 'followers' : 'following';
 					this.loadFollowings(predicate);
 				}
@@ -131,12 +132,11 @@ export default class ProfileStore {
 	updateProfile = async (profile: Partial<Profile>) => {
 		this.loading = true;
 
-		try{
+		try {
 			await agent.Profiles.updateProfile(profile);
 
 			runInAction(() => {
-				if(this.profile && profile.displayName)
-				{
+				if (this.profile && profile.displayName) {
 					this.profile.displayName = profile.displayName;
 					store.userStore.setDisplayName(profile.displayName);
 					this.profile.bio = profile.bio ?? "";
@@ -158,20 +158,19 @@ export default class ProfileStore {
 			store.activityStore.updateAttendeeFollowing(username);
 
 			runInAction(() => {
-				if(this.profile && this.profile.username !== store.userStore.user?.userName
-					&& this.profile.username === username){
-					following ? this.profile.followersCount ++ : this.profile.followersCount --;
+				if (this.profile && this.profile.username !== store.userStore.user?.userName
+					&& this.profile.username === username) {
+					following ? this.profile.followersCount++ : this.profile.followersCount--;
 
 					this.profile.following = !this.profile?.following;
 				}
 
-				if(this.profile && this.profile.username === store.userStore.user?.userName){
-					following ? this.profile.followingCount ++ : this.profile.followingCount--;
+				if (this.profile && this.profile.username === store.userStore.user?.userName) {
+					following ? this.profile.followingCount++ : this.profile.followingCount--;
 				}
 
 				this.followings.forEach(profile => {
-					if(profile.username === username)
-					{
+					if (profile.username === username) {
 						profile.following ? profile.followersCount-- : profile.followersCount++;
 						profile.following = !profile.following;
 					}
@@ -179,7 +178,7 @@ export default class ProfileStore {
 
 				this.loading = false;
 			});
-		} catch (error){
+		} catch (error) {
 			console.log(error);
 			runInAction(() => this.loading = false);
 		}
@@ -187,17 +186,33 @@ export default class ProfileStore {
 
 	loadFollowings = async (predicate: string) => {
 		this.loadingFollowings = true;
-		try{
+		try {
 			const followings = await agent.Profiles.listFollowings(this.profile!.username, predicate);
 
-			runInAction(()=>{
+			runInAction(() => {
 				this.followings = followings;
 				this.loadingFollowings = false;
 			});
-		}catch(error){
+		} catch (error) {
 			console.log(error);
 			runInAction(() => this.loadingFollowings = false);
 		}
 
+	}
+
+	loadProfileEvents = async (predicate: string) => {
+		this.loadingEvents = true;
+
+		try {
+			const events = await agent.Profiles.listProfileActivities(this.profile!.username, predicate);
+
+			runInAction(() => {
+				this.profileEvents.set(predicate, events);
+				this.loadingEvents = false;
+			})
+		} catch (error) {
+			console.log(error);
+			runInAction(() => this.loadingFollowings = false);
+		}
 	}
 }

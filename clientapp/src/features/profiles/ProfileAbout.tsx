@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { Button, Grid, Header, Tab } from "semantic-ui-react";
 import { Profile } from "../../app/models/profile";
+import { useStore } from "../../app/stores/store";
 import ProfileAboutForm from "./ProfileAboutForm";
 
 interface Props {
@@ -10,10 +11,13 @@ interface Props {
 
 export default observer(function ProfileAbout({ profile }: Props) {
 	const [isEditMode, setIsEditMode] = useState(false);
+	const {
+		userStore: { user },
+	} = useStore();
 
 	const closeEditMode = () => {
 		setIsEditMode(false);
-	}
+	};
 
 	return (
 		<Tab.Pane>
@@ -26,19 +30,24 @@ export default observer(function ProfileAbout({ profile }: Props) {
 					/>
 				</Grid.Column>
 				<Grid.Column width={8}>
-					<Button basic content={isEditMode ? 'Cancel' : 'Edit Profile'} floated="right"
-						onClick={() => setIsEditMode(!isEditMode)}
-					/>
+					{user?.userName === profile.username && (
+						<Button
+							basic
+							content={isEditMode ? "Cancel" : "Edit Profile"}
+							floated="right"
+							onClick={() => setIsEditMode(!isEditMode)}
+						/>
+					)}
 				</Grid.Column>
 				<Grid.Column width={16}>
-					{
-						isEditMode ?
-						(
-							<ProfileAboutForm profile={profile} closeEditMode={closeEditMode} />
-						) : (
-							<p style={{whiteSpace:"pre-wrap"}}>{profile.bio}</p>
-						)
-					}
+					{isEditMode ? (
+						<ProfileAboutForm
+							profile={profile}
+							closeEditMode={closeEditMode}
+						/>
+					) : (
+						<p style={{ whiteSpace: "pre-wrap" }}>{profile.bio}</p>
+					)}
 				</Grid.Column>
 			</Grid>
 		</Tab.Pane>
