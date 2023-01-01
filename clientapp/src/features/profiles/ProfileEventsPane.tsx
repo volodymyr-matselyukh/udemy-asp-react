@@ -1,4 +1,4 @@
-import { Card, Container, Loader, Segment } from "semantic-ui-react";
+import { Card, Container, Loader } from "semantic-ui-react";
 import { useStore } from "../../app/stores/store";
 import ProfileEventCard from "./ProfileEventCard";
 import { useEffect } from "react";

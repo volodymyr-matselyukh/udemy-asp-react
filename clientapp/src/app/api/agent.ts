@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { router } from "../../app/layout/App";
 import { toast } from "react-toastify";
-import { browserHistory } from "../..";
 import { Activity, ActivityFormValues } from "../models/activity";
 import { PaginatedResult } from "../models/pagination";
 import { Photo, Profile, ProfileEvent } from "../models/profile";
@@ -51,10 +51,6 @@ axios.interceptors.response.use(async response => {
 				toast.error(data);
 			}
 
-			if (config && config.method === 'get' && data.errors.hasOwnProperty('id')) {
-				browserHistory.push('/not-found');
-			}
-
 			if (data.errors) {
 				const modalStateErrors = [];
 				for (const key in data.errors) {
@@ -64,6 +60,10 @@ axios.interceptors.response.use(async response => {
 				}
 
 				throw modalStateErrors.flat();
+			}
+
+			if (config && config.method === 'get' && data.errors.hasOwnProperty('id')) {
+				router.navigate('/not-found');
 			}
 			break;
 		case 401:
@@ -81,11 +81,11 @@ axios.interceptors.response.use(async response => {
 			
 			break;
 		case 404:
-			browserHistory.push('/not-found');
+			router.navigate('/not-found');
 			break;
 		case 500:
 			store.commonStore.setServerError(data);
-			browserHistory.push('/server-error');
+			router.navigate('/server-error');
 			break;
 	}
 

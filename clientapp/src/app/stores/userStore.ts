@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { User, UserFormValues } from "../models/user";
 import { store } from "./store";
-import { browserHistory } from "../../index";
+import { router } from "../layout/App";
 
 export default class UserStore{
     user: User | null = null;
@@ -22,9 +22,9 @@ export default class UserStore{
                 this.user = user;
                 store.commonStore.setToken(user.token);
             });
-            browserHistory.push('/activities');
-            store.modalStore.closeModal();
-            
+
+			store.modalStore.closeModal();
+			return router.navigate('/activities');
         } catch (error) {
             throw error;
         }
@@ -32,7 +32,7 @@ export default class UserStore{
 
     logout = () => {
         this.logoutUser();
-        browserHistory.push('/');
+		router.navigate('/');
     }
 
 	logoutUser = () => {
@@ -54,7 +54,7 @@ export default class UserStore{
                 this.user = user;
                 store.commonStore.setToken(user.token);
             });
-            browserHistory.push('/activities');
+			router.navigate('/activities');
             store.modalStore.closeModal();
         } catch (error) {
             throw error;

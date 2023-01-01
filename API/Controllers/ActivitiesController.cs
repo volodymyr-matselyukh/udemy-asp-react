@@ -13,7 +13,7 @@ namespace API.Controllers
         private readonly IActivityService _activityService;
         private readonly IAttendenceService _attendenceService;
 
-        public ActivitiesController(DataContext dbContext, IActivityService activityService,
+        public ActivitiesController(IActivityService activityService,
             IAttendenceService attendenceService)
         {
             _activityService = activityService;
