@@ -7,7 +7,6 @@ appsettings.json
 StudentAssets/
 StudentAssets New/
 StudentAssets Old/
-Api/wwwroot/
 
 # User-specific files
 *.rsuser

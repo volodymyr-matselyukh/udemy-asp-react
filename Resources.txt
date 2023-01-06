@@ -14,7 +14,7 @@ Drop-Database -p Persistance -s API
 docker run --name dev -e POSTGRES=admin -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest
 
 #docker build
-docker build -t volodymyr92/reactivities .
+docker build -t volodymyr92/reactivities:latest .
 
 #docker run
 docker run --rm -it -p 8080:80 volodymyr92/reactivities
