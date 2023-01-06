@@ -13,7 +13,7 @@ const sleep = (delay: number) => {
 	});
 }
 
-axios.defaults.baseURL = "http://localhost:5000/api";
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 axios.interceptors.request.use(config => {
 	const token = store.commonStore.token;
@@ -25,10 +25,12 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async response => {
-	await sleep(1000);
+	if (process.env.NODE_ENV === 'development') {
+		await sleep(1000);
+	}
 	const pagination = response.headers['pagination'];
 
-	if(pagination){
+	if (pagination) {
 		response.data = new PaginatedResult(response.data, JSON.parse(pagination));
 		return response as AxiosResponse<PaginatedResult<any>>;
 	}
@@ -37,13 +39,12 @@ axios.interceptors.response.use(async response => {
 }, (error: AxiosError) => {
 	let data, status, config;
 
-	if(error.response)
-	{
+	if (error.response) {
 		data = error.response.data;
 		status = error.response.status;
 		config = error.response.config;
 	}
-	 
+
 
 	switch (status) {
 		case 400:
@@ -67,18 +68,16 @@ axios.interceptors.response.use(async response => {
 			}
 			break;
 		case 401:
-			if(config && config.url !== "/account")
-			{
+			if (config && config.url !== "/account") {
 				toast.error('unauthorized', { theme: "colored" });
 			}
-			
+
 			break;
 		case 403:
-			if(config && config.url !== "/account")
-			{
+			if (config && config.url !== "/account") {
 				toast.error('unauthorized', { theme: "colored" });
 			}
-			
+
 			break;
 		case 404:
 			router.navigate('/not-found');
@@ -102,8 +101,8 @@ const requests = {
 }
 
 const Activities = {
-	list: (params: URLSearchParams) => axios.get<PaginatedResult<Activity[]>>('/activities', {params})
-										.then(responseBody),
+	list: (params: URLSearchParams) => axios.get<PaginatedResult<Activity[]>>('/activities', { params })
+		.then(responseBody),
 	details: (id: string) => requests.get<Activity>(`/activities/${id}`),
 	create: (activity: ActivityFormValues) => requests.post<Activity>("/activities", activity),
 	update: (activity: ActivityFormValues) => requests.put<Activity>(`/activities/${activity.id}`, activity),

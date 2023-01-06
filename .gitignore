@@ -4,6 +4,10 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 appsettings.json
+StudentAssets/
+StudentAssets New/
+StudentAssets Old/
+Api/wwwroot/
 
 # User-specific files
 *.rsuser

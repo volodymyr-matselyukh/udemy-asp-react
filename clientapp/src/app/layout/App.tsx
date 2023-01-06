@@ -11,7 +11,6 @@ import {
 	Outlet,
 	Route,
 	RouterProvider,
-	Routes,
 	ScrollRestoration,
 } from "react-router-dom";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
@@ -21,11 +20,11 @@ import TestErrors from "../../features/errors/TestErrors";
 import { ToastContainer } from "react-toastify";
 import NotFound from "../../features/errors/NotFound";
 import ServerError from "../../features/errors/ServerError";
-import LoginForm from "../../features/users/LoginForm";
 import { useStore } from "../stores/store";
 import LoadingComponent from "./LoadingComponents";
 import ModalContainer from "../common/modals/ModalContainer";
 import ProfilePage from "../../features/profiles/ProfilePage";
+import RequireAuth from "../router/RequireAuth";
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -44,20 +43,22 @@ export const router = createBrowserRouter(
 					</>
 				}
 			>
-				<Route path="/activities" element={<ActivityDashboard />} />
-				<Route
-					path="/activities/:id"
-					element={<ActivityDetails />}
-				/>
-				<Route path="/createActivity" element={<ActivityForm />} />
-				<Route path="/manage/:id" element={<ActivityForm />} />
-				<Route
-					path="/profiles/:username"
-					element={<ProfilePage />}
-				/>
-				<Route path="/errors" element={<TestErrors />} />
+				<Route element={<RequireAuth />}>
+					<Route path="/activities" element={<ActivityDashboard />} />
+					<Route
+						path="/activities/:id"
+						element={<ActivityDetails />}
+					/>
+					<Route path="/createActivity" element={<ActivityForm />} />
+					<Route path="/manage/:id" element={<ActivityForm />} />
+					<Route
+						path="/profiles/:username"
+						element={<ProfilePage />}
+					/>
+					<Route path="/errors" element={<TestErrors />} />
+				</Route>
+
 				<Route path="/server-error" element={<ServerError />} />
-				<Route path="/login" element={<LoginForm />} />
 				<Route path="*" element={<NotFound />} />
 			</Route>
 		</>
